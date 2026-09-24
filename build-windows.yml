@@ -1,0 +1,17 @@
+name: Build Windows VST3
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DPRISM_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build build --config Release --parallel
+      - name: Render tests
+        run: build\PrismRenderTest_artefacts\Release\PrismRenderTest.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PrismRack-VST3-Windows
+          path: build/PrismRack_artefacts/Release/VST3/
